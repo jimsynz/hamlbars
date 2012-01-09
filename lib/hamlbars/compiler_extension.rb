@@ -16,7 +16,7 @@ module Haml
                    else 
                    ''
                    end
-        build_attributes_without_bindings(is_html, attr_wrapper, escape_attrs, attributes) + bindings
+        ' ' + build_attributes_without_bindings(is_html, attr_wrapper, escape_attrs, attributes) + bindings
       end
       alias build_attributes_without_bindings build_attributes
       alias build_attributes build_attributes_with_bindings 
