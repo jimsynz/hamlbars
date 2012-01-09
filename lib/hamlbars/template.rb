@@ -30,11 +30,14 @@ module Hamlbars
                    else
                      @engine.render(scope, locals, &block)
                    end
+=begin
         if basename =~ /^_/
         "Handlebars.registerPartial('#{name}', '#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}');\n"
         else
         "App.registerTemplate('#{name}', '#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}');\n"
         end
+=end
+        "Ember.TEMPLATES[\"#{scope.logical_path.downcase.gsub(/[^a-z0-9]/, '_')}\"] = Ember.Handlebars.compile(\"#{template.strip.gsub(/(\r\n|[\n\r    "'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
       end
 
       # Precompiled Haml source. Taken from the precompiled_with_ambles
