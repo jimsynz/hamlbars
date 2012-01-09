@@ -79,10 +79,20 @@ module Haml
   module Helpers
 
     module HamlbarsExtensions
-      def iterate(name, &block)
-        content = capture_haml(&block)
-        "{{##{name}}}#{content.strip}{{/#{name}}}"
+      # Used to create handlebars expressions within HAML,
+      # if you pass a block then it will create a Handlebars
+      # block helper (ie "{{#expression}}..{{/expression}}" 
+      # otherwise it will create an expression 
+      # (ie "{{expression}}").
+      def handlebars(expression, &block)
+        if block.respond_to? :call
+          content = capture_haml(&block)
+          "{{##{expression}}}#{content.strip}{{/#{expression}}}"
+        else
+          "{{#{expression}}}"
+        end
       end
+      alias handlebars hb
     end
 
     include HamlbarsExtensions
