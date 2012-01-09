@@ -10,6 +10,8 @@ module Haml
       # for the creation of handlebars bound attributes by
       # adding :bind hash to the tag attributes.
       def build_attributes_with_bindings (is_html, attr_wrapper, escape_attrs, attributes={})
+        puts "attr_wrapper: #{attr_wrapper.inspect}"
+        puts "escape_attrs: #{escape_attrs.inspect}"
         attributes[:bind] = attributes.delete('bind') if attributes['bind']
         bindings = if attributes[:bind].is_a? Hash
                      " {{bindAttr#{build_attributes_without_bindings(is_html, attr_wrapper, escape_attrs, attributes.delete(:bind))}}}"
