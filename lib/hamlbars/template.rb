@@ -87,7 +87,7 @@ module Haml
       def handlebars(expression, &block)
         if block.respond_to? :call
           content = capture_haml(&block)
-          "{{##{expression}}}#{content.strip}{{/#{expression}}}"
+          "{{##{expression}}}#{content.strip}{{/#{expression.split(' ').first}}}"
         else
           "{{#{expression}}}"
         end
