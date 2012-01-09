@@ -92,7 +92,7 @@ module Haml
           "{{#{expression}}}"
         end
       end
-      alias handlebars hb
+      alias hb handlebars
     end
 
     include HamlbarsExtensions
