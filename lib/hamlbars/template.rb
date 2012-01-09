@@ -1,7 +1,7 @@
 require 'tilt/template'
 
-module Tilt
-  class HamlbarsTemplate < Template
+module Hamlbars
+  class Template < Tilt::Template
     JS_ESCAPE_MAP = {
       "\r\n"  => '\n',
       "\n"    => '\n',

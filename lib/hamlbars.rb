@@ -1,4 +1,5 @@
 require 'haml'
+require 'sprockets'
 
 module Hamlbars
 
@@ -10,12 +11,13 @@ module Hamlbars
   ROOT = File.expand_path(File.dirname(__FILE__))
 
   autoload :CompilerExtension, File.join(ROOT, 'hamlbars', 'compiler_extension')
+  autoload :Template,          File.join(ROOT, 'hamlbars', 'template')
 
   Haml::Compiler.send(:include, CompilerExtension)
 
   if defined? Sprockets
-    Sprockets.register_engine '.hamlbars', HamlbarsTemplate
-    Sprockets.register_engine '.hbs', HamlbarsTemplate
+    Sprockets.register_engine '.hamlbars', Template
+    Sprockets.register_engine '.hbs', Template
   end
 
 end
