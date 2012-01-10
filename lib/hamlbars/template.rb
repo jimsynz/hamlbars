@@ -93,6 +93,18 @@ module Haml
         end
       end
       alias hb handlebars
+
+      # The same as #handlebars except that it outputs "triple-stash"
+      # expressions, which means that Handlebars won't escape the output.
+      def handlebars!(expression, &block)
+        if block.respond_to? :call
+          content = capture_haml(&block)
+          "{{{##{expression}}}}#{content.strip}{{{/#{expression.split(' ').first}}}}"
+        else
+          "{{{#{expression}}}}"
+        end
+      end
+      alias hb! handlebars!
     end
 
     include HamlbarsExtensions
