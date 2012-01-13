@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'tilt'
   s.add_development_dependency 'rspec'
   
-  s.files         = %w(README.md) + Dir["lib/**/*"]
+  s.files         = %w(README.md MIT-LICENSE) + Dir["lib/**/*"]
 
   s.require_paths = ['lib']
 end
