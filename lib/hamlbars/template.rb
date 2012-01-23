@@ -59,7 +59,7 @@ module Hamlbars
       if basename =~ /^_/
         "#{self.class.template_partial_method}('#{name}', '#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}');\n"
       else
-          "#{self.class.template_destination}[\"#{scope.logical_path.downcase.gsub(/[^a-z0-9]/, '_')}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
+        "#{self.class.template_destination}[\"#{scope.logical_path.downcase.gsub(/[^a-z0-9]/, '_')}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
       end
     end
 
@@ -107,27 +107,37 @@ module Haml
       # block helper (ie "{{#expression}}..{{/expression}}" 
       # otherwise it will create an expression 
       # (ie "{{expression}}").
-      def handlebars(expression, &block)
+      def handlebars(expression, options={}, &block)
         if block.respond_to? :call
           content = capture_haml(&block)
-          "{{##{expression}}}#{content.strip}{{/#{expression.split(' ').first}}}"
+          raw("{{##{make(expression, options)}}}") << "#{content.strip}{{/#{expression.split(' ').first}}}"
         else
-          "{{#{expression}}}"
+          raw("{{#{make(expression, options)}}}")
         end
       end
       alias hb handlebars
 
       # The same as #handlebars except that it outputs "triple-stash"
       # expressions, which means that Handlebars won't escape the output.
-      def handlebars!(expression, &block)
+      def handlebars!(expression, options={}, &block)
         if block.respond_to? :call
           content = capture_haml(&block)
-          "{{{##{expression}}}}#{content.strip}{{{/#{expression.split(' ').first}}}}"
+          raw("{{{##{make(expression, options)}}}}") << "#{content.strip}{{{/#{expression.split(' ').first}}}}"
         else
-          "{{{#{expression}}}}"
+          raw("{{{#{make(expression, options)}}}}")
         end
       end
       alias hb! handlebars!
+
+    private
+
+      def make(expression, options)
+        if options.any?
+          expression << " " << options.map {|key, value| "#{key}=\"#{value}\"" }.join(' ')
+        else
+          expression
+        end
+      end
     end
 
     include HamlbarsExtensions
