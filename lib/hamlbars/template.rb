@@ -51,8 +51,17 @@ module Hamlbars
     end
 
     def evaluate(scope, locals, &block)
+      scope = scope.dup
+
+      scope.class.send(:include, ActionView::Helpers) if defined?(::ActionView)
+      if defined?(::Rails)
+        scope.class.send(:include, Rails.application.helpers)
+        scope.class.send(:include, Rails.application.routes.url_helpers)
+        scope.default_url_options = Rails.application.config.action_controller.default_url_options || {}
+      end
+
       template = if @engine.respond_to?(:precompiled_method_return_value, true)
-                   super
+                   super(scope, locals, &block)
                  else
                    @engine.render(scope, locals, &block)
                  end
