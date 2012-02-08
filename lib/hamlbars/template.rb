@@ -11,6 +11,10 @@ module Hamlbars
       "'"     => "\\'"
     }
 
+    def self.path_translator(path)
+      path.downcase.gsub(/[^a-z0-9]/, '_')
+    end
+
     def self.template_destination
       @template_destination ||= 'Handlebars.templates'
     end
@@ -67,8 +71,10 @@ module Hamlbars
                  end
       if basename =~ /^_/
         "#{self.class.template_partial_method}('#{name}', '#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}');\n"
+      elsif scope.respond_to? :logical_path
+        "#{self.class.template_destination}[\"#{self.class.path_translator(scope.logical_path)}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
       else
-        "#{self.class.template_destination}[\"#{scope.logical_path.downcase.gsub(/[^a-z0-9]/, '_')}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
+        "#{self.class.template_destination}[\"#{self.class.path_translator(basename)}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
       end
     end
 
@@ -117,24 +123,14 @@ module Haml
       # otherwise it will create an expression 
       # (ie "{{expression}}").
       def handlebars(expression, options={}, &block)
-        if block.respond_to? :call
-          content = capture_haml(&block)
-          raw("{{##{make(expression, options)}}}") << "#{content.strip}{{/#{expression.split(' ').first}}}"
-        else
-          raw("{{#{make(expression, options)}}}")
-        end
+        express(['{{','}}'],expression,options,&block)
       end
       alias hb handlebars
 
       # The same as #handlebars except that it outputs "triple-stash"
       # expressions, which means that Handlebars won't escape the output.
       def handlebars!(expression, options={}, &block)
-        if block.respond_to? :call
-          content = capture_haml(&block)
-          raw("{{{##{make(expression, options)}}}}") << "#{content.strip}{{{/#{expression.split(' ').first}}}}"
-        else
-          raw("{{{#{make(expression, options)}}}}")
-        end
+        express(['{{{','}}}'],expression,options,&block)
       end
       alias hb! handlebars!
 
@@ -147,6 +143,16 @@ module Haml
           expression
         end
       end
+
+      def express(demarcation,expression,options={},&block)
+        if block.respond_to? :call
+          content = capture_haml(&block)
+          preserve("#{demarcation.first}##{make(expression, options)}#{demarcation.last}") << "#{content.strip}#{demarcation.first}/#{expression.split(' ').first}#{demarcation.last}"
+        else
+          preserve("#{demarcation.first}#{make(expression, options)}#{demarcation.last}")
+        end
+      end
+
     end
 
     include HamlbarsExtensions
