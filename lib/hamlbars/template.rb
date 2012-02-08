@@ -110,7 +110,7 @@ module Haml
       def handlebars(expression, options={}, &block)
         if block.respond_to? :call
           content = capture_haml(&block)
-          raw("{{##{make(expression, options)}}}") << "#{content.strip}{{/#{expression.split(' ').first}}}"
+          raw("{{##{make(expression, options)}}}" << content.strip) << "{{/#{expression.split(' ').first}}}"
         else
           raw("{{#{make(expression, options)}}}")
         end
@@ -122,7 +122,7 @@ module Haml
       def handlebars!(expression, options={}, &block)
         if block.respond_to? :call
           content = capture_haml(&block)
-          raw("{{{##{make(expression, options)}}}}") << "#{content.strip}{{{/#{expression.split(' ').first}}}}"
+          raw("{{{##{make(expression, options)}}}}" << content.strip) << "{{{/#{expression.split(' ').first}}}}"
         else
           raw("{{{#{make(expression, options)}}}}")
         end
