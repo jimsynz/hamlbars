@@ -12,6 +12,20 @@ Which will generate the following output:
 
     <div class="widget" {{bindAttr title="App.widgetController.title"}}></div>
 
+# Event bindings
+
+You can add one or more event actions by adding an event hash or array or event hashes to the tag options:
+
+    %a{ :event => { :on => 'click', :action => 'clicked' } } Click
+
+or
+
+    %div{ :events => [ { :on => 'mouseover', :action => 'highlightView' }, { :on => 'mouseout', :action => 'disableViewHighlight' } ] }
+
+Note that the default event is `click`, so it's not necessary to specify it:
+
+    %a{ :event => { :action => 'clicked' } } Click
+
 # Handlebar helper
 
 You can use the `handlebars` helper (or just `hb` for short) to generate both Handlebar blocks and expressions.
@@ -45,6 +59,20 @@ will result in the following markup:
        {{/each}}
     </ul>
 
+## Options
+
+The `hb` helper can take an optional hash of options which will be rendered inside the expression:
+
+    = hb 'view App.InfoView', :tagName => 'span'
+
+will result in:
+
+    {{view App.InfoView tagName="span"}}
+
+## Tripple-stash
+
+You can use the `handlebars!` or `hb!` variant of the `handlebars` helper to output "tripple-stash" expressions within which Handlebars does not escape the output.
+
 # Configuration options
 
 `hamlbars` has two configuration options, which pertain to the generated JavaScript:
@@ -64,6 +92,12 @@ The good news is that if you're using the [emberjs-rails](http://www.rubygems.or
 # Asset pipeline
 
 Hamlbars is specifically designed for use with Rails 3.1's asset pipeline.  Simply create templates ending in `.js.hamlbars` (or `.js.hbs`) and Sprockets will know what to do.
+
+# Rails helpers
+
+You can enable support by calling `Hamlbars::Template.enable_rails_helpers!`. Probably the best way to do this is to create an initializer.  This is dangerous and possibly stupid as a large number of Rails' helpers require access to the request object, which is not present when compiling assets.
+
+**Use at your own risk. You have been warned.**
 
 # License and Copyright.
 
