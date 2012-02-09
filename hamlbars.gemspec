@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'sprockets'
   s.add_dependency 'tilt'
   s.add_development_dependency 'rspec'
+  s.add_development_dependency 'execjs'
   
   s.files         = %w(README.md MIT-LICENSE) + Dir["lib/**/*"]
 

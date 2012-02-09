@@ -83,9 +83,9 @@ module Hamlbars
       if basename =~ /^_/
         "#{self.class.template_partial_method}('#{name}', '#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}');\n"
       elsif scope.respond_to? :logical_path
-        "#{self.class.template_destination}[\"#{self.class.path_translator(scope.logical_path)}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
+        "#{self.class.template_destination}[\"#{self.class.path_translator(scope.logical_path)}\"] = #{precompile(template)};\n"
       else
-        "#{self.class.template_destination}[\"#{self.class.path_translator(basename)}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
+        "#{self.class.template_destination}[\"#{self.class.path_translator(basename)}\"] = #{precompile(template)};\n"
       end
     end
 
@@ -121,6 +121,32 @@ module Hamlbars
         RUBY
       end
     end
+
+    private
+
+    def precompile(template)
+      if defined? ::Rails
+        runtime.eval "#{self.class.template_compiler.gsub('.compile', '.precompile')}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\").toString()"
+      else
+        "#{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\")"
+      end
+    end
+
+    def runtime
+      Thread.current[:hamlbars_runtime] ||= ExecJS.compile(preload_libraries)
+    end
+
+    def preload_libraries
+      preload = [ 'hamlbars-precompiler.js' ]
+      case self.class.template_compiler
+      when 'Ember.Handlebars.compile'
+        preload << 'ember.js'
+      when 'Handlebars.compile'
+        preload << 'handlebars.js'
+      end
+      preload.map { |asset| Rails.application.assets.find_asset(asset) }.compact.join "\n"
+    end
+
   end
 end
 
@@ -145,7 +171,7 @@ module Haml
       end
       alias hb! handlebars!
 
-    private
+      private
 
       def make(expression, options)
         if options.any?
@@ -158,9 +184,9 @@ module Haml
       def express(demarcation,expression,options={},&block)
         if block.respond_to? :call
           content = capture_haml(&block)
-          preserve("#{demarcation.first}##{make(expression, options)}#{demarcation.last}") << "#{content.strip}#{demarcation.first}/#{expression.split(' ').first}#{demarcation.last}"
+          ("#{demarcation.first}##{make(expression, options)}#{demarcation.last}") << "#{content.strip}#{demarcation.first}/#{expression.split(' ').first}#{demarcation.last}"
         else
-          preserve("#{demarcation.first}#{make(expression, options)}#{demarcation.last}")
+          ("#{demarcation.first}#{make(expression, options)}#{demarcation.last}")
         end
       end
 
