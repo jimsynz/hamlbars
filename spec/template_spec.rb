@@ -1,7 +1,7 @@
 require 'spec_helper.rb'
 require 'tempfile'
 
-  # Small patch because Tilt expects files to respond to #to_str
+# Small patch because Tilt expects files to respond to #to_str
 class Tempfile
   def to_str
     path
@@ -22,6 +22,11 @@ describe Hamlbars::Template do
 
   after :all do
     template_file.unlink
+  end
+
+  it "should render compiler preamble" do
+    template = Hamlbars::Template.new(template_file)
+    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"\");\n"
   end
 
   it "should bind element attributes" do
@@ -86,5 +91,6 @@ describe Hamlbars::Template do
     template = Hamlbars::Template.new(template_file)
     template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{{hello whom=\\\"world\\\"}}}\");\n"
   end
+
 
 end
