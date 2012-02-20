@@ -5,6 +5,7 @@ end
 
 module Haml
   module Compiler
+
     class << self
       # Overload build_attributes in Haml::Compiler to allow
       # for the creation of handlebars bound attributes by
@@ -17,14 +18,14 @@ module Haml
         attributes[:events] << attributes.delete(:event) if attributes[:event]
 
         handlebars_rendered_attributes = []
-        handlebars_rendered_attributes << handlebars_attributes('bindAttr', is_html, escape_attrs, attributes.delete(:bind)) if attributes[:bind]
+        handlebars_rendered_attributes << handlebars_attributes('bindAttr', attributes.delete(:bind)) if attributes[:bind]
         attributes[:events].each do |event|
           on = event.delete('on') || event.delete(:on) || 'click'
-          handlebars_rendered_attributes << handlebars_attributes("action \"#{on}\"", is_html, escape_attrs, event)
+          handlebars_rendered_attributes << handlebars_attributes("action \"#{on}\"", event)
         end
         attributes.delete(:events)
 
-        (handlebars_rendered_attributes * '') + 
+        (handlebars_rendered_attributes * '') +
           build_attributes_without_handlebars_attributes(is_html, attr_wrapper, escape_attrs, attributes)
       end
       alias build_attributes_without_handlebars_attributes build_attributes
@@ -32,8 +33,9 @@ module Haml
 
       private
 
-      def handlebars_attributes(helper, is_html, escape_attrs, attributes)
-        " {{#{helper}#{build_attributes_without_handlebars_attributes(is_html, '"', escape_attrs, attributes)}}}"
+      def handlebars_attributes(helper, attributes)
+        rendered_attributes = [].tap { |r|attributes.each { |k,v| r << "#{k}=\"#{v}\"" } }.join(' ')
+        " {{#{helper} #{rendered_attributes}}}"
       end
     end
   end
