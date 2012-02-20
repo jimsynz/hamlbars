@@ -92,5 +92,15 @@ describe Hamlbars::Template do
     template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{{hello whom=\\\"world\\\"}}}\");\n"
   end
 
+  it "should not escape block contents" do
+    template_file.write <<EOF
+= hb 'if a_thing_is_true' do
+  = hb 'hello'
+  %a{:bind => {:href => 'aController'}}
+EOF
+    template_file.rewind
+    template = Hamlbars::Template.new(template_file)
+    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{#if a_thing_is_true}}{{hello}}\\n<a {{bindAttr href=\\\"aController\\\"}}></a>{{/if}}\");\n"
+  end
 
 end
