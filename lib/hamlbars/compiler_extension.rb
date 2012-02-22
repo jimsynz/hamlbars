@@ -20,8 +20,9 @@ module Haml
         handlebars_rendered_attributes = []
         handlebars_rendered_attributes << handlebars_attributes('bindAttr', attributes.delete(:bind)) if attributes[:bind]
         attributes[:events].each do |event|
-          on = event.delete('on') || event.delete(:on) || 'click'
-          handlebars_rendered_attributes << handlebars_attributes("action \"#{on}\"", event)
+          event[:on] = event.delete('on') || event.delete(:on) || 'click'
+          action = event.delete('action') || event.delete(:action)
+          handlebars_rendered_attributes << handlebars_attributes("action \"#{action}\"", event)
         end
         attributes.delete(:events)
 

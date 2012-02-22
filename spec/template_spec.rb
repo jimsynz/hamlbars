@@ -40,14 +40,14 @@ describe Hamlbars::Template do
     template_file.write('%a{ :event => { :action => "edit" } } Edit')
     template_file.rewind
     template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"<a {{action \\\"click\\\" action=\\\"edit\\\"}}>Edit</a>\");\n"
+    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"<a {{action \\\"edit\\\" on=\\\"click\\\"}}>Edit</a>\");\n"
   end
 
   it "should bind multiple event attributes" do
     template_file.write('%a{ :events => [ { :action => "edit" }, { :on => "mouseover", :action => "showEditable" } ] } Edit')
     template_file.rewind
     template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"<a {{action \\\"click\\\" action=\\\"edit\\\"}} {{action \\\"mouseover\\\" action=\\\"showEditable\\\"}}>Edit</a>\");\n"
+    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"<a {{action \\\"edit\\\" on=\\\"click\\\"}} {{action \\\"showEditable\\\" on=\\\"mouseover\\\"}}>Edit</a>\");\n"
   end
 
   it "should render expressions" do
