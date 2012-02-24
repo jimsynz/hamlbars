@@ -158,12 +158,17 @@ module Haml
       def express(demarcation,expression,options={},&block)
         if block.respond_to? :call
           content = capture_haml(&block)
-          "#{demarcation.first}##{make(expression, options)}#{demarcation.last}#{content.strip}#{demarcation.first}/#{expression.split(' ').first}#{demarcation.last}"
+          output = "#{demarcation.first}##{make(expression, options)}#{demarcation.last}#{content.strip}#{demarcation.first}/#{expression.split(' ').first}#{demarcation.last}"
         else
-          "#{demarcation.first}#{make(expression, options)}#{demarcation.last}"
+          output = "#{demarcation.first}#{make(expression, options)}#{demarcation.last}"
+        end
+
+        begin
+          Haml::Util.html_safe output
+        rescue
+          output
         end
       end
-
     end
 
     include HamlbarsExtensions
