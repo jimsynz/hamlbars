@@ -163,11 +163,8 @@ module Haml
           output = "#{demarcation.first}#{make(expression, options)}#{demarcation.last}"
         end
 
-        begin
-          Haml::Util.html_safe output
-        rescue
-          output
-        end
+        output = Haml::Util.html_safe(output) if Haml::Util.rails_xss_safe?
+        output
       end
     end
 
