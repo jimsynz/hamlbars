@@ -112,10 +112,8 @@ EOF
       end
     end
     Hamlbars::Template
-    class Helpers
-      include Haml::Helpers
-    end
-    Helpers.new.hb 'some_expression'.should_not be_a(ActiveSupport::SafeBuffer)
+    helpers = Class.new { include Haml::Helpers }.new
+    helpers.hb 'some_expression'.should_not be_a(ActiveSupport::SafeBuffer)
   end
 
   it "should not mark expressions as html_safe when XSS protection is disabled" do
@@ -125,10 +123,8 @@ EOF
       end
     end
     Hamlbars::Template
-    class Helpers
-      include Haml::Helpers
-    end
-    Helpers.new.hb 'some_expression'.should_not be_a(ActiveSupport::SafeBuffer)
+    helpers = Class.new { include Haml::Helpers }.new
+    helpers.hb 'some_expression'.should_not be_a(ActiveSupport::SafeBuffer)
   end
 
 end
