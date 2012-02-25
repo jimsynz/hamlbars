@@ -1,5 +1,7 @@
 require 'spec_helper.rb'
 require 'tempfile'
+require 'active_support'
+require 'active_support/core_ext/string/output_safety'
 
 # Small patch because Tilt expects files to respond to #to_str
 class Tempfile
@@ -101,6 +103,32 @@ EOF
     template_file.rewind
     template = Hamlbars::Template.new(template_file)
     template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{#if a_thing_is_true}}{{hello}}\\n<a {{bindAttr href=\\\"aController\\\"}}></a>{{/if}}\");\n"
+  end
+
+  it "should not mark expressions as html_safe when XSS protection is disabled" do
+    Haml::Util.module_eval do
+      def rails_xss_safe?
+        false
+      end
+    end
+    Hamlbars::Template
+    class Helpers
+      include Haml::Helpers
+    end
+    Helpers.new.hb 'some_expression'.should_not be_a(ActiveSupport::SafeBuffer)
+  end
+
+  it "should not mark expressions as html_safe when XSS protection is disabled" do
+    Haml::Util.module_eval do
+      def rails_xss_safe?
+        true
+      end
+    end
+    Hamlbars::Template
+    class Helpers
+      include Haml::Helpers
+    end
+    Helpers.new.hb 'some_expression'.should_not be_a(ActiveSupport::SafeBuffer)
   end
 
 end
