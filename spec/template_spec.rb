@@ -148,6 +148,8 @@ describe Hamlbars::Template, "partials" do
   it "should render partial preamble" do
     template = Hamlbars::Template.new(template_file)
 
-    template.render.should == "Handlebars.registerPartial('#{File.basename(template_file.path)}', \'\');\n"
+    basename = File.basename(template_file.path)
+    partial_name = Hamlbars::Template.path_translator(basename)[1..-1]
+    template.render.should == "Handlebars.registerPartial('#{partial_name}', \'\');\n"
   end
 end
