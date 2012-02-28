@@ -128,3 +128,28 @@ EOF
   end
 
 end
+
+describe Hamlbars::Template, "partials" do
+
+  let(:template_file) { Tempfile.new '_hamlbars_template' }
+
+  before :each do
+    template_file.rewind
+  end
+
+  after :each do
+    template_file.flush
+  end
+
+  after :all do
+    template_file.unlink
+  end
+
+  it "should render partial preamble" do
+    template = Hamlbars::Template.new(template_file)
+
+    basename = File.basename(template_file.path)
+    partial_name = Hamlbars::Template.path_translator(basename)[1..-1]
+    template.render.should == "Handlebars.registerPartial('#{partial_name}', \'\');\n"
+  end
+end
