@@ -12,7 +12,7 @@ module Hamlbars
     }
 
     def self.path_translator(path)
-      path.downcase.gsub(/[^a-z0-9]/, '_')
+      path.downcase.gsub(/[^a-z0-9\/]/, '_')
     end
 
     def self.template_destination
@@ -80,21 +80,28 @@ module Hamlbars
                  else
                    @engine.render(scope, locals, &block)
                  end
+
       if scope.respond_to? :logical_path
-        name = self.class.path_translator(scope.logical_path)
+        path = scope.logical_path
       else
-        name = self.class.path_translator(basename)
+        path = basename
       end
 
       if basename =~ /^_/
-        name = remove_underscore_from_partial_name(name, basename)
+        name = partial_path_translator(path)
         "#{self.class.template_partial_method}('#{name}', '#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}');\n"
       else
+        name = self.class.path_translator(path)
         "#{self.class.template_destination}[\"#{name}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
       end
     end
 
-    def remove_underscore_from_partial_name(name, basename)
+    def partial_path_translator(path)
+      name = self.class.path_translator(path).gsub(%r{/}, '.')
+      remove_underscore_from_partial_name(name)
+    end
+
+    def remove_underscore_from_partial_name(name)
       translated_basename = self.class.path_translator(basename)
       name.sub(/#{translated_basename}$/, translated_basename[1..-1])
     end
