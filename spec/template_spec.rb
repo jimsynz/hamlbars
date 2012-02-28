@@ -22,7 +22,12 @@ describe Hamlbars::Template do
     template_file.flush
   end
 
+  before :all do
+    Hamlbars::Template.disable_enclosures!
+  end
+
   after :all do
+    Hamlbars::Template.enable_enclosures!
     template_file.unlink
   end
 

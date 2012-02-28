@@ -2,6 +2,11 @@ require 'tilt/template'
 
 module Hamlbars
   class Template < Tilt::Template
+    include EnclosureExtension
+    enable_enclosures! # Enable enclosures by default.
+    if defined? Rails
+      include RailsHelperExtension
+    end
 
     JS_ESCAPE_MAP = {
       "\r\n"  => '\n',
@@ -45,14 +50,6 @@ module Hamlbars
       defined? ::Haml::Engine
     end
 
-    if defined? ::Rails
-      def self.enable_rails_helpers!
-        (Rails.env == 'development' ? Logger.new(STDOUT) : Rails.logger).warn "WARNING (hamlbars): Enabling helpers in assets can have unintended consequences and violates separation of concerns. You have been warned."
-        alias_method :evaluate_without_rails_helpers, :evaluate
-        alias_method :evaluate, :evaluate_with_rails_helpers
-      end
-    end
-
     def initialize_engine
       require_template_library 'haml'
     end
@@ -60,18 +57,6 @@ module Hamlbars
     def prepare
       options = @options.merge(:filename => eval_file, :line => line)
       @engine = ::Haml::Engine.new(data, options)
-    end
-
-    def evaluate_with_rails_helpers(scope, locals, &block)
-      scope = scope.dup
-
-      scope.class.send(:include, ActionView::Helpers) if defined?(::ActionView)
-      if defined?(::Rails)
-        scope.class.send(:include, Rails.application.helpers)
-        scope.class.send(:include, Rails.application.routes.url_helpers)
-        scope.default_url_options = Rails.application.config.action_controller.default_url_options || {}
-      end
-      evaluate_without_rails_helpers(scope, locals, &block)
     end
 
     def evaluate(scope, locals, &block)
