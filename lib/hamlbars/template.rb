@@ -80,13 +80,23 @@ module Hamlbars
                  else
                    @engine.render(scope, locals, &block)
                  end
-      if basename =~ /^_/
-        "#{self.class.template_partial_method}('#{name}', '#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}');\n"
-      elsif scope.respond_to? :logical_path
-        "#{self.class.template_destination}[\"#{self.class.path_translator(scope.logical_path)}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
+      if scope.respond_to? :logical_path
+        name = self.class.path_translator(scope.logical_path)
       else
-        "#{self.class.template_destination}[\"#{self.class.path_translator(basename)}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
+        name = self.class.path_translator(basename)
       end
+
+      if basename =~ /^_/
+        name = remove_underscore_from_partial_name(name, basename)
+        "#{self.class.template_partial_method}('#{name}', '#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}');\n"
+      else
+        "#{self.class.template_destination}[\"#{name}\"] = #{self.class.template_compiler}(\"#{template.strip.gsub(/(\r\n|[\n\r"'])/) { JS_ESCAPE_MAP[$1] }}\");\n"
+      end
+    end
+
+    def remove_underscore_from_partial_name(name, basename)
+      translated_basename = self.class.path_translator(basename)
+      name.sub(/#{translated_basename}$/, translated_basename[1..-1])
     end
 
     # Precompiled Haml source. Taken from the precompiled_with_ambles
