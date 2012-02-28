@@ -132,6 +132,7 @@ end
 describe Hamlbars::Template, "partials" do
 
   let(:template_file) { Tempfile.new '_hamlbars_template' }
+  let(:template) { Hamlbars::Template.new(template_file) }
 
   before :each do
     template_file.rewind
@@ -146,10 +147,19 @@ describe Hamlbars::Template, "partials" do
   end
 
   it "should render partial preamble" do
-    template = Hamlbars::Template.new(template_file)
-
     basename = File.basename(template_file.path)
-    partial_name = Hamlbars::Template.path_translator(basename)[1..-1]
+    partial_name = basename.gsub(/-/, '_')[1..-1]
     template.render.should == "Handlebars.registerPartial('#{partial_name}', \'\');\n"
+  end
+
+  it "should replace everything but letters, numbers with _ and / with ." do
+    template.stub(:basename) { "_asdf1234,%*/." }
+    template.partial_path_translator("asdf1234,%*/.").should == "asdf1234___._"
+  end
+end
+
+describe Hamlbars::Template, "#path_translator" do
+  it "should replace everything but letters, numbers and slashes with _" do
+    Hamlbars::Template.path_translator("asdf1234,%*/.").should == "asdf1234___/_"
   end
 end
