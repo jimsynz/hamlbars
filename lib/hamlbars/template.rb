@@ -82,13 +82,12 @@ module Hamlbars
     end
 
     def partial_path_translator(path)
-      name = self.class.path_translator(path).gsub(%r{/}, '.')
-      remove_underscore_from_partial_name(name)
+      path = remove_underscore_from_partial_path(path)
+      self.class.path_translator(path).gsub(%r{/}, '.')
     end
 
-    def remove_underscore_from_partial_name(name)
-      translated_basename = self.class.path_translator(basename)
-      name.sub(/#{translated_basename}$/, translated_basename[1..-1])
+    def remove_underscore_from_partial_path(path)
+      path.sub(/(.*)(\/|^)_(.+?)$/, '\1\2\3')
     end
 
     # Precompiled Haml source. Taken from the precompiled_with_ambles
