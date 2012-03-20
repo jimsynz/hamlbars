@@ -18,10 +18,14 @@ module Hamlbars
       "'"     => "\\'"
     }
 
+    # Used to change the asset path into a string which is
+    # safe to use as a JavaScript object property.
     def self.path_translator(path)
       path.downcase.gsub(/[^a-z0-9\/]/, '_')
     end
 
+    # Handy helper to preconfigure Hamlbars to render for
+    # either :handlebars (default) or :ember.
     def self.render_templates_for(whom=:handlebars)
       if whom == :handlebars
         self.template_destination = 'Handlebars.templates'
@@ -34,6 +38,9 @@ module Hamlbars
       end
     end
 
+    # The target object where the rendered template will
+    # be stored on the client side.
+    # Defaults to 'Handlebars.templates'
     def self.template_destination
       @template_destination ||= 'Handlebars.templates'
     end
@@ -42,6 +49,8 @@ module Hamlbars
       @template_destination = x
     end
 
+    # The JavaScript function used to compile the HTML
+    # string into a usable Handlebars template.
     def self.template_compiler
       @template_compiler ||= 'Handlebars.compile'
     end
@@ -50,6 +59,8 @@ module Hamlbars
       @template_compiler = x
     end
 
+    # The JavaScript function used on the compile side to 
+    # register the template as a partial on the client side.
     def self.template_partial_method
       @template_partial_method ||= 'Handlebars.registerPartial'
     end
@@ -73,6 +84,8 @@ module Hamlbars
       @engine = ::Haml::Engine.new(data, options)
     end
 
+    # Uses Haml to render the template into an HTML string, then 
+    # wraps it in the neccessary JavaScript to serve to the client.
     def evaluate(scope, locals, &block)
       template = if @engine.respond_to?(:precompiled_method_return_value, true)
                    super(scope, locals, &block)
@@ -95,10 +108,15 @@ module Hamlbars
       end
     end
 
+    # Used to change the asset path into a string which is
+    # safe to use as a JavaScript object property. When
+    # the template is a partial (ie starts with a '_')
     def partial_path_translator(path)
       path = remove_underscore_from_partial_path(path)
       self.class.path_translator(path).gsub(%r{/}, '.')
     end
+
+    private
 
     def remove_underscore_from_partial_path(path)
       path.sub(/(.*)(\/|^)_(.+?)$/, '\1\2\3')

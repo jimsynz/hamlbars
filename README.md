@@ -73,21 +73,39 @@ will result in:
 
 You can use the `handlebars!` or `hb!` variant of the `handlebars` helper to output "tripple-stash" expressions within which Handlebars does not escape the output.
 
-# Configuration options
+# Configuring template output:
 
-`hamlbars` has two configuration options, which pertain to the generated JavaScript:
+`hamlbars` has three configuration options, which pertain to the generated JavaScript:
 
     Hamlbars::Template.template_destination    # default 'Handlebars.templates'
     Hamlbars::Template.template_compiler       # default 'Handlebars.compile'
     Hamlbars::Template.template_partial_method # default 'Handlebars.registerPartial'
 
-These settings will work find by default if you are using Handlebars as a standalone JavaScript library, however if you ware using something that embeds Handlebars within it e.g. [Ember.js](http://www.emberjs.com) then you'll want to change these to:
+These settings will work find by default if you are using Handlebars as a standalone JavaScript library, however if you are using something that embeds Handlebars within it then you'll have to change these.
+
+If you're using [Ember.js](http://www.emberjs.com) then you can use:
+
+    Hamlbars::Template.render_templates_for :ember
+
+Which is effectively the same as:
 
     Hamlbars::Template.template_destination = 'Ember.TEMPLATES'
     Hamlbars::Template.template_compiler = 'Ember.Handlebars.compile'
     Hamlbars::Template.template_partial_method = 'Ember.Handlebars.registerPartial'
 
 The good news is that if you're using the [emberjs-rails](http://www.rubygems.org/gems/emberjs-rails) gem then it will automatically detect hamlbars and change it for you. Magic!
+
+If you're using [ember-rails](http://rubygems.org/gems/ember-rails) then you'll need to put this in a initializer.
+
+# Configuring JavaScript output:
+
+As of version 2012.3.21 `hamlbars` has experimental support for template precompilation using [ExecJS](http://rubygems.org/gems/execjs).  If you want to enable this support you can use:
+
+    Hamlbars::Template.enable_precompiler!
+
+You can also disable enclosification (which is enabled by default) using:
+
+    Hamlbars::Template.disable_closures!
 
 # Asset pipeline
 

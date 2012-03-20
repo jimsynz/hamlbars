@@ -8,6 +8,8 @@ module Hamlbars
         base.extend ClassMethods
       end
 
+      # Takes the rendered template and compiles it using the Handlebars
+      # compiler via ExecJS.
       def evaluate_with_precompiler(scope, locals, &block)
         if self.class.precompiler_enabled? 
           precompile { evaluate_without_precompiler(scope,locals,&block) }
@@ -45,6 +47,8 @@ module Hamlbars
 
       module ClassMethods
 
+        # Enables use of the Handlebars compiler when rendering
+        # templates.
         def enable_precompiler!
           @precompiler_enabled = true
           unless public_method_defined? :evaluate_without_precompiler
