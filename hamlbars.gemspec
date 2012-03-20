@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'haml'
   s.add_dependency 'sprockets'
   s.add_dependency 'tilt'
+  s.add_dependency 'execjs', [">= 1.2"]
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'activesupport'
   

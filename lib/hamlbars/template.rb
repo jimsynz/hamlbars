@@ -4,8 +4,10 @@ module Hamlbars
   class Template < Tilt::Template
     include Ext::Closure
     enable_closures! # Enable closures by default.
+    include Ext::Precompiler
     if defined? Rails
       include Ext::RailsHelper
+      enable_precompiler! if Rails.env.production?
     end
 
     JS_ESCAPE_MAP = {

@@ -13,13 +13,13 @@ module Hamlbars
       private
 
       def enclosify
-        "function() { #{yield} }()"
+        "(function() { #{yield} }).call(this)"
       end
 
       module ClassMethods
         def enable_closures!
           @enable_closures = true
-          unless instance_method(:evaluate) == instance_method(:evaluate_with_closure)
+          unless public_method_defined? :evaluate_without_closure
             alias_method :evaluate_without_closure, :evaluate
             alias_method :evaluate, :evaluate_with_closure
           end

@@ -22,7 +22,7 @@ describe Hamlbars::Ext::Closure do
     template_file.write("")
     template_file.rewind
     template = Hamlbars::Template.new(template_file)
-    template.render.should == "function() { Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"\");\n }()"
+    template.render.should == "(function() { Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"\");\n }).call(this)"
   end
 
 end
