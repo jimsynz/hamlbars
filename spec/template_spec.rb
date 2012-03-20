@@ -154,9 +154,14 @@ describe Hamlbars::Template, "partials" do
     template.render.should == "Handlebars.registerPartial('#{partial_name}', \'\');\n"
   end
 
-  it "should replace everything but letters, numbers with _ and / with ." do
-    template.stub(:basename) { "_asdf1234,%*/." }
-    template.partial_path_translator("asdf1234,%*/.").should == "asdf1234___._"
+  describe "#partial_path_translator" do
+    it "should replace everything but letters, numbers with _ and / with ." do
+      template.partial_path_translator("asdf1234,%*/.").should == "asdf1234___._"
+    end
+
+    it "it should remove the underscore from the partial name" do
+      template.partial_path_translator("shared/_partial").should == "shared.partial"
+    end
   end
 end
 
