@@ -5,24 +5,24 @@ module Hamlbars
       def self.included(base)
         base.extend ClassMethods
       end
-
-      def evaluate(*)
-        enclosify super
+      
+      def evaluate_with_closure(scope, locals, &block)
+        self.class.closures_enabled? ? enclosify { evaluate_without_closure(scope,locals,&block) } : evaluate_without_closure(scope,locals,&block)
       end
 
       private
 
-      def enclosify(data)
-        if self.class.closures_enabled?
-          "function() { #{data} }()"
-        else
-          data
-        end
+      def enclosify
+        "function() { #{yield} }()"
       end
 
       module ClassMethods
         def enable_closures!
           @enable_closures = true
+          unless instance_method(:evaluate) == instance_method(:evaluate_with_closure)
+            alias_method :evaluate_without_closure, :evaluate
+            alias_method :evaluate, :evaluate_with_closure
+          end
         end
 
         def closures_enabled?

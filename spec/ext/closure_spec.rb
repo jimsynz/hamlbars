@@ -21,7 +21,6 @@ describe Hamlbars::Ext::Closure do
   it "should wrap output in a closure" do
     template_file.write("")
     template_file.rewind
-    puts Hamlbars::Template.closures_enabled?
     template = Hamlbars::Template.new(template_file)
     template.render.should == "function() { Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"\");\n }()"
   end
