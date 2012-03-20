@@ -178,3 +178,79 @@ describe Hamlbars::Template, "#path_translator" do
     Hamlbars::Template.path_translator("asdf1234,%*/.").should == "asdf1234___/_"
   end
 end
+
+describe Hamlbars::Template, '::template_destination' do
+
+  let(:template_file) { Tempfile.new 'hamlbars_template' }
+  let(:template) { Hamlbars::Template.new(template_file) }
+
+  before do
+    Hamlbars::Template.disable_closures!
+    @original_template_destination = Hamlbars::Template.template_destination
+    Hamlbars::Template.template_destination='HamlbarsTestTemplates'
+    template_file.write('')
+    template_file.rewind
+  end
+
+  after do
+    Hamlbars::Template.enable_closures!
+    Hamlbars::Template.template_destination=@origina_template_destination
+    template_file.flush
+  end
+
+  it "should reflect changed template destination" do
+    template.render.should == "HamlbarsTestTemplates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"\");\n"
+  end
+
+end
+
+describe Hamlbars::Template, '::template_partial_method' do
+
+  let(:template_file) { Tempfile.new '_hamlbars_template' }
+  let(:template) { Hamlbars::Template.new(template_file) }
+
+  before do
+    Hamlbars::Template.disable_closures!
+    @original_template_partial_method = Hamlbars::Template.template_partial_method
+    Hamlbars::Template.template_partial_method='HamlbarsTestPartial'
+    template_file.write('')
+    template_file.rewind
+  end
+
+  after do
+    Hamlbars::Template.enable_closures!
+    Hamlbars::Template.template_partial_method=@original_template_partial_method
+    template_file.flush
+  end
+
+  it "should reflect changed template partial method name" do
+    partial_location = Hamlbars::Template.path_translator(File.basename(template_file.path))[1..-1]
+    template.render.should == "HamlbarsTestPartial('#{partial_location}', '');\n"
+  end
+
+end
+
+describe Hamlbars::Template, '::template_compiler' do
+
+  let(:template_file) { Tempfile.new 'hamlbars_template' }
+  let(:template) { Hamlbars::Template.new(template_file) }
+
+  before do
+    Hamlbars::Template.disable_closures!
+    @original_template_compiler = Hamlbars::Template.template_compiler
+    Hamlbars::Template.template_compiler='HamlbarsTestCompiler'
+    template_file.write('')
+    template_file.rewind
+  end
+
+  after do
+    Hamlbars::Template.enable_closures!
+    Hamlbars::Template.template_compiler=@origina_template_compiler
+    template_file.flush
+  end
+
+  it "should reflect changed template compiler" do
+    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = HamlbarsTestCompiler(\"\");\n"
+  end
+
+end
