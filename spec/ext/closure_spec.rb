@@ -1,13 +1,8 @@
 require 'spec_helper'
 
-describe Hamlbars::EnclosureExtension do
-
-  before(:all) do
-    Hamlbars::Template.enable_enclosures! 
-  end
+describe Hamlbars::Ext::Closure do
 
   after(:all) do
-    Hamlbars::Template.disable_enclosures! 
     template_file.unlink
   end
 
@@ -15,15 +10,18 @@ describe Hamlbars::EnclosureExtension do
 
   before :each do
     template_file.rewind
+    Hamlbars::Template.enable_closures! 
   end
 
   after :each do
     template_file.flush
+    Hamlbars::Template.disable_closures! 
   end
 
   it "should wrap output in a closure" do
     template_file.write("")
     template_file.rewind
+    puts Hamlbars::Template.closures_enabled?
     template = Hamlbars::Template.new(template_file)
     template.render.should == "function() { Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"\");\n }()"
   end

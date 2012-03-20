@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Haml::Compiler do
 
   it "should include Hamlbars::CompilerExtension" do
-    Haml::Compiler.ancestors.should include(Hamlbars::CompilerExtension)
+    Haml::Compiler.ancestors.should include(Hamlbars::Ext::Compiler)
   end
 
   it "should define ::build_attributes_with_handlebars_attributes" do

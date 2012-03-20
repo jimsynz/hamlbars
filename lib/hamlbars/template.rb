@@ -2,10 +2,10 @@ require 'tilt/template'
 
 module Hamlbars
   class Template < Tilt::Template
-    include EnclosureExtension
-    enable_enclosures! # Enable enclosures by default.
+    include Ext::Closure
+    enable_closures! # Enable closures by default.
     if defined? Rails
-      include RailsHelperExtension
+      include Ext::RailsHelper
     end
 
     JS_ESCAPE_MAP = {

@@ -1,14 +1,6 @@
 require 'spec_helper.rb'
-require 'tempfile'
 require 'active_support'
 require 'active_support/core_ext/string/output_safety'
-
-# Small patch because Tilt expects files to respond to #to_str
-class Tempfile
-  def to_str
-    path
-  end
-end
 
 describe Hamlbars::Template do
 
@@ -23,11 +15,11 @@ describe Hamlbars::Template do
   end
 
   before :all do
-    Hamlbars::Template.disable_enclosures!
+    Hamlbars::Template.disable_closures!
   end
 
   after :all do
-    Hamlbars::Template.enable_enclosures!
+    Hamlbars::Template.enable_closures!
     template_file.unlink
   end
 
@@ -147,8 +139,13 @@ describe Hamlbars::Template, "partials" do
     template_file.flush
   end
 
+  before :all do
+    Hamlbars::Template.disable_closures!
+  end
+
   after :all do
     template_file.unlink
+    Hamlbars::Template.enable_closures!
   end
 
   it "should render partial preamble" do
@@ -164,6 +161,14 @@ describe Hamlbars::Template, "partials" do
 end
 
 describe Hamlbars::Template, "#path_translator" do
+  before :all do
+    Hamlbars::Template.disable_closures!
+  end
+
+  after :all do
+    Hamlbars::Template.enable_closures!
+  end
+
   it "should replace everything but letters, numbers and slashes with _" do
     Hamlbars::Template.path_translator("asdf1234,%*/.").should == "asdf1234___/_"
   end

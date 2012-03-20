@@ -10,13 +10,10 @@ module Hamlbars
 
   ROOT = File.expand_path(File.dirname(__FILE__))
 
-  autoload :CompilerExtension,    File.join(ROOT, 'hamlbars', 'compiler_extension')
-  autoload :Template,             File.join(ROOT, 'hamlbars', 'template')
-  autoload :RailsHelperExtension, File.join(ROOT, 'hamlbars', 'rails_helper_extension')
-  autoload :EnclosureExtension,   File.join(ROOT, 'hamlbars', 'enclosure_extension')
-  autoload :Template,             File.join(ROOT, 'hamlbars', 'template')
+  autoload :Ext,      File.join(ROOT, 'hamlbars', 'ext')
+  autoload :Template, File.join(ROOT, 'hamlbars', 'template')
 
-  Haml::Compiler.send(:include, CompilerExtension)
+  Haml::Compiler.send(:include, Ext::Compiler)
 
   if defined? Sprockets
     Sprockets.register_engine '.hamlbars', Template

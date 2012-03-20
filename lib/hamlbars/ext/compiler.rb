@@ -1,5 +1,7 @@
 module Hamlbars
-  module CompilerExtension
+  module Ext
+    module Compiler
+    end
   end
 end
 
