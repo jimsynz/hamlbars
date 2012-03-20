@@ -20,11 +20,29 @@ describe Hamlbars::Ext::Precompiler do
     Hamlbars::Template.enable_closures!
   end
 
-  it "should compile the template to JavaScript" do
-    template_file.write("")
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {\nhelpers = helpers || Handlebars.helpers;\n  var self=this;\n\n\n  return \"(\\\"\\\");\";\n})\n"
+  describe 'for Handlebars' do
+
+    it "should compile the template to JavaScript" do
+      template_file.write("")
+      template_file.rewind
+      template = Hamlbars::Template.new(template_file)
+      template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {\nhelpers = helpers || Handlebars.helpers;\n  var self=this;\n\n\n  return \"(\\\"\\\");\";\n})\n"
+    end
+
+  end
+
+  describe 'for Ember' do
+
+    before { Hamlbars::Template.render_templates_for :ember }
+    after { Hamlbars::Template.render_templates_for :handlebars }
+
+    it "should compile the template to JavaScript" do
+      template_file.write("")
+      template_file.rewind
+      template = Hamlbars::Template.new(template_file)
+      template.render.should == "Ember.TEMPLATES[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Ember.Handlebars.template(function anonymous(Handlebars,depth0,helpers,partials,data) {\nhelpers = helpers || Handlebars.helpers;\n  var self=this;\n\n\n  return \"(\\\"\\\");\";\n})\n"
+    end
+
   end
   
 end

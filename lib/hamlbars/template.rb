@@ -22,6 +22,18 @@ module Hamlbars
       path.downcase.gsub(/[^a-z0-9\/]/, '_')
     end
 
+    def self.render_templates_for(whom=:handlebars)
+      if whom == :handlebars
+        self.template_destination = 'Handlebars.templates'
+        self.template_compiler = 'Handlebars.compile'
+        self.template_partial_method = 'Handlebars.registerPartial'
+      elsif whom == :ember
+        self.template_destination = 'Ember.TEMPLATES'
+        self.template_compiler = 'Ember.Handlebars.compile'
+        self.template_partial_method = 'Ember.Handlebars.registerPartial'
+      end
+    end
+
     def self.template_destination
       @template_destination ||= 'Handlebars.templates'
     end

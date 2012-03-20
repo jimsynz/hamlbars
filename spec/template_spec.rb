@@ -254,3 +254,47 @@ describe Hamlbars::Template, '::template_compiler' do
   end
 
 end
+
+describe Hamlbars::Template, '::render_templates_for' do
+
+  describe :handlebars do
+
+    subject { Hamlbars::Template } 
+    before { subject.render_templates_for :handlebars }
+
+    it "::template_destination should equal 'Handlebars.templates'" do
+      subject.template_destination.should == 'Handlebars.templates'
+    end
+
+    it "::template_compiler should equal 'Handlebars.compile'" do
+      subject.template_compiler.should == 'Handlebars.compile'
+    end
+
+    it "::template_partial_method should equal 'Handlebars.registerPartial'" do
+      subject.template_partial_method.should == 'Handlebars.registerPartial'
+    end
+
+  end
+
+  describe :ember do
+
+    subject { Hamlbars::Template } 
+    before { subject.render_templates_for :ember }
+    after { subject.render_templates_for :handlebars }
+
+    it "::template_destination should equal 'Ember.TEMPLATES'" do
+      subject.template_destination.should == 'Ember.TEMPLATES'
+    end
+
+    it "::template_compiler should equal 'Ember.Handlebars.compile'" do
+      subject.template_compiler.should == 'Ember.Handlebars.compile'
+    end
+
+    it "::template_partial_method should equal 'Ember.Handlebars.registerPartial'" do
+      subject.template_partial_method.should == 'Ember.Handlebars.registerPartial'
+    end
+
+  end
+
+
+end
