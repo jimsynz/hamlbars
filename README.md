@@ -109,7 +109,7 @@ You can also disable enclosification (which is enabled by default) using:
 
 # Asset pipeline
 
-Hamlbars is specifically designed for use with Rails 3.1's asset pipeline.  Simply create templates ending in `.js.hamlbars` (or `.js.hbs`) and Sprockets will know what to do.
+Hamlbars is specifically designed for use with Rails 3.1's asset pipeline.  Simply create templates ending in `.js.hamlbars` and Sprockets will know what to do.
 
 # Rails helpers
 

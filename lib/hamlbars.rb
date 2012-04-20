@@ -17,7 +17,6 @@ module Hamlbars
 
   if defined? Sprockets
     Sprockets.register_engine '.hamlbars', Template
-    Sprockets.register_engine '.hbs', Template
   end
 
 end
