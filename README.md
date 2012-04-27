@@ -2,6 +2,10 @@
 
 [Hamlbars](https://github.com/jamesotron/hamlbars) is a Ruby gem which allows you to easily generate [Handlebar](http://handlebarsjs.com) templates using [Haml](http://www.haml-lang.com).
 
+# Demo Site
+
+If you're unsure how all the pieces fit together then take a quick look at the [demo site](http://hamlbars-demo.herokuapp.com/).
+
 # Attribute bindings
 
 You can easily add attribute bindings by adding a `:bind` hash to the tag attributes, like so:
