@@ -9,7 +9,8 @@ Gem::Specification.new do |s|
   s.authors       = ['James Harton']
   s.email         = ['james@sociable.co.nz']
   s.homepage      = 'https://github.com/jamesotron/hamlbars'
-  s.summary       = 'Extensions to HAML to allow creation of handlebars expressions.'
+  s.summary       = 'Extensions to Haml to allow creation of handlebars expressions.'
+  s.description   = 'Hamlbars allows you to write handlebars templates using the familiar Haml syntax.'
   s.add_dependency 'haml'
   s.add_dependency 'sprockets'
   s.add_dependency 'tilt'
@@ -17,7 +18,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'activesupport'
   
-  s.files         = %w(README.md MIT-LICENSE) + Dir["lib/**/*"]
+  s.files         = %w(README.md History.md MIT-LICENSE) + Dir["lib/**/*"] + Dir["vendor/**/*"]
 
   s.require_paths = ['lib']
 end
