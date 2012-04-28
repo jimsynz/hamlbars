@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'activesupport'
   
-  s.files         = %w(README.md MIT-LICENSE) + Dir["lib/**/*"]
+  s.files         = %w(README.md History.md MIT-LICENSE) + Dir["lib/**/*"] + Dir["vendor/**/*"]
 
   s.require_paths = ['lib']
 end
