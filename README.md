@@ -1,5 +1,8 @@
 # Hamlbars
 
+[![Build Status](https://secure.travis-ci.org/jamesotron/hamlbars.png?branch=master)](http://travis-ci.org/jamesotron/hamlbars)
+[![Dependency Status](https://gemnasium.com/jamesotron/hamlbars.png)](https://gemnasium.com/jamesotron/hamlbars)
+
 [Hamlbars](https://github.com/jamesotron/hamlbars) is a Ruby gem which allows you to easily generate [Handlebar](http://handlebarsjs.com) templates using [Haml](http://www.haml-lang.com).
 
 # Demo Site
