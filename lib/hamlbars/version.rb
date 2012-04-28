@@ -1,3 +1,3 @@
 module Hamlbars
-  VERSION = '2012.3.21'
+  VERSION = '1.0.0'
 end
