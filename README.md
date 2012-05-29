@@ -4,7 +4,7 @@
 [![Dependency Status](https://gemnasium.com/jamesotron/hamlbars.png)](https://gemnasium.com/jamesotron/hamlbars)
 
 [Hamlbars](https://github.com/jamesotron/hamlbars) is a Ruby gem which allows
-you to easily generate [Handlebar](http://handlebarsjs.com) templates using
+you to easily generate [Handlebars](http://handlebarsjs.com) templates using
 [Haml](http://www.haml-lang.com).
 
 # Installation
@@ -60,10 +60,10 @@ Note that the default event is `click`, so it's not necessary to specify it:
 %a{ :event => { :action => 'clicked' } } Click
 ```
 
-# Handlebar helper
+# Handlebars helper
 
 You can use the `handlebars` helper (or just `hb` for short) to generate both
-Handlebar blocks and expressions.
+Handlebars blocks and expressions.
 
 ## Expressions
 
@@ -163,9 +163,8 @@ need to put this in a initializer.
 
 # Configuring JavaScript output:
 
-As of version 2012.3.21 `hamlbars` has experimental support for template
-precompilation using [ExecJS](http://rubygems.org/gems/execjs).  If you want to
-enable this support you can use:
+Hamlbars has experimental support for template precompilation using
+[ExecJS](http://rubygems.org/gems/execjs). To enable it, call
 
 ```ruby
 Hamlbars::Template.enable_precompiler!
