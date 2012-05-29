@@ -5,6 +5,18 @@
 
 [Hamlbars](https://github.com/jamesotron/hamlbars) is a Ruby gem which allows you to easily generate [Handlebar](http://handlebarsjs.com) templates using [Haml](http://www.haml-lang.com).
 
+# Installation
+
+Add the following line to your Gemfile (on Rails, inside the `:assets` group):
+
+```ruby
+gem 'hamlbars', '~> 1.0'
+```
+
+If you are stuck with an older, yanked version like 2012.3.21 and it won't
+update to 1.0, be sure to add `'~> 1.0'` as the version spec and run `bundle
+install`.
+
 # Demo Site
 
 If you're unsure how all the pieces fit together then take a quick look at the [demo site](http://hamlbars-demo.herokuapp.com/).
