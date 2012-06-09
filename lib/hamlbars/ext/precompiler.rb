@@ -41,7 +41,7 @@ module Hamlbars
 
       def js
         [ 'handlebars.js', 'precompiler.js' ].map do |name|
-          File.read(File.expand_path("../../../../vendor/javascripts/#{name}", __FILE__))
+          File.read(File.expand_path("../../../../vendor/assets/javascripts/#{name}", __FILE__))
         end.join("\n")
       end
 
