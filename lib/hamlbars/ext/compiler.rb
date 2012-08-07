@@ -9,10 +9,27 @@ module Hamlbars
       def self.included(base)
         base.instance_eval do
 
+          if Haml::VERSION >= "3.2"
+            # Haml 3.2 introduces hyphenate_data_attrs
+            def build_attributes_with_handlebars_attributes (is_html, attr_wrapper, escape_attrs, hyphenate_data_attrs, attributes={})
+              handlebars_rendered_attributes = build_attributes_with_handlebars_attributes_base(is_html, attr_wrapper, escape_attrs, attributes)
+
+              (handlebars_rendered_attributes * '') +
+                build_attributes_without_handlebars_attributes(is_html, attr_wrapper, escape_attrs, hyphenate_data_attrs, attributes)
+            end
+          else
+            def build_attributes_with_handlebars_attributes (is_html, attr_wrapper, escape_attrs, attributes={})
+              handlebars_rendered_attributes = build_attributes_with_handlebars_attributes_base(is_html, attr_wrapper, escape_attrs, attributes)
+
+              (handlebars_rendered_attributes * '') +
+                build_attributes_without_handlebars_attributes(is_html, attr_wrapper, escape_attrs, attributes)
+            end
+          end
+
           # Overload build_attributes in Haml::Compiler to allow
           # for the creation of handlebars bound attributes by
           # adding :bind hash to the tag attributes.
-          def build_attributes_with_handlebars_attributes (is_html, attr_wrapper, escape_attrs, attributes={})
+          def build_attributes_with_handlebars_attributes_base(is_html, attr_wrapper, escape_attrs, attributes={})
             attributes[:bind] = attributes.delete('bind') if attributes['bind']
             attributes[:event] = attributes.delete('event') if attributes['event']
             attributes[:events] = attributes.delete('events') if attributes['events']
@@ -28,9 +45,9 @@ module Hamlbars
             end
             attributes.delete(:events)
 
-            (handlebars_rendered_attributes * '') +
-              build_attributes_without_handlebars_attributes(is_html, attr_wrapper, escape_attrs, attributes)
+            handlebars_rendered_attributes
           end
+
 
           alias build_attributes_without_handlebars_attributes build_attributes
           alias build_attributes build_attributes_with_handlebars_attributes
