@@ -31,7 +31,7 @@ describe Hamlbars::Template do
   it "should bind element attributes" do
     template_file.write('%img{ :bind => { :src => "logoUri" }, :alt => "Logo" }')
     template_file.rewind
-    template = Hamlbars::Template.new(template_file)
+    template = Hamlbars::Template.new(template_file, :format => :xhtml)
     template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"<img {{bindAttr src=\\\"logoUri\\\"}} alt=\\'Logo\\' />\");\n"
   end
 
