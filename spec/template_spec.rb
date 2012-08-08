@@ -102,6 +102,19 @@ EOF
     template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{#if a_thing_is_true}}{{hello}}\\n<a {{bindAttr href=\\\"aController\\\"}}></a>{{/if}}\");\n"
   end
 
+  it "should not close else contents" do
+    template_file.write <<EOF
+= hb 'if a_thing_is_true' do
+  Hello
+  = hb 'else' do
+    Goodbye
+EOF
+    template_file.rewind
+    template = Hamlbars::Template.new(template_file)
+    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{#if a_thing_is_true}}Hello\\n{{#else}}Goodbye{{/if}}\");\n"
+
+  end
+
   it "should not mark expressions as html_safe when XSS protection is disabled" do
     Haml::Util.module_eval do
       def rails_xss_safe?
