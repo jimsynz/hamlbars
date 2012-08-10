@@ -46,6 +46,12 @@ module Hamlbars
               handlebars_rendered_attributes << Hamlbars::Ext::Compiler.handlebars_attributes("action \"#{action}\"", event)
             end
 
+            # This could be generalized into /_.*/ catch-all syntax, if
+            # necessary. https://github.com/jamesotron/hamlbars/pull/33
+            if action = attributes.delete('_action')
+              handlebars_rendered_attributes << " {{action #{action}}}"
+            end
+
             handlebars_rendered_attributes
           end
           alias build_attributes_without_handlebars_attributes build_attributes

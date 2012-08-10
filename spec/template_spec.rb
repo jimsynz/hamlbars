@@ -43,14 +43,21 @@ describe Hamlbars::Template do
       "<img {{bindAttr src=\\\"logoUri\\\"}} alt=\\'Logo\\' />"
   end
 
-  it "should bind single event attribute" do
-    to_handlebars('%a{ :event => { :action => "edit" } } Edit').should ==
-       "<a {{action \\\"edit\\\" on=\\\"click\\\"}}>Edit</a>"
+  describe "old event syntax" do
+    it "should bind single event attribute" do
+      to_handlebars('%a{ :event => { :action => "edit" } } Edit').should ==
+         "<a {{action \\\"edit\\\" on=\\\"click\\\"}}>Edit</a>"
+    end
+
+    it "should bind multiple event attributes" do
+      to_handlebars('%a{ :events => [ { :action => "edit" }, { :on => "mouseover", :action => "showEditable" } ] } Edit').should ==
+        "<a {{action \\\"edit\\\" on=\\\"click\\\"}} {{action \\\"showEditable\\\" on=\\\"mouseover\\\"}}>Edit</a>"
+    end
   end
 
-  it "should bind multiple event attributes" do
-    to_handlebars('%a{ :events => [ { :action => "edit" }, { :on => "mouseover", :action => "showEditable" } ] } Edit').should ==
-      "<a {{action \\\"edit\\\" on=\\\"click\\\"}} {{action \\\"showEditable\\\" on=\\\"mouseover\\\"}}>Edit</a>"
+  it "should render action attributes" do
+    to_handlebars('%a{ :_action => \'edit article on="click"\' } Edit').should ==
+      '<a {{action edit article on=\"click\"}}>Edit</a>'
   end
 
   it "should render expressions" do
