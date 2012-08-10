@@ -23,83 +23,73 @@ describe Hamlbars::Template do
     template_file.unlink
   end
 
+  def to_handlebars(s)
+    template_file.write(s)
+    template_file.rewind
+    handlebars = Hamlbars::Template.new(template_file, :format => :xhtml).render
+    prefix = "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\""
+    suffix = "\");\n"
+    handlebars.should start_with prefix
+    handlebars.should end_with suffix
+    handlebars[prefix.length...-suffix.length]
+  end
+
   it "should render compiler preamble" do
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"\");\n"
+    to_handlebars('').should == ''
   end
 
   it "should bind element attributes" do
-    template_file.write('%img{ :bind => { :src => "logoUri" }, :alt => "Logo" }')
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file, :format => :xhtml)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"<img {{bindAttr src=\\\"logoUri\\\"}} alt=\\'Logo\\' />\");\n"
+    to_handlebars('%img{ :bind => { :src => "logoUri" }, :alt => "Logo" }').should ==
+      "<img {{bindAttr src=\\\"logoUri\\\"}} alt=\\'Logo\\' />"
   end
 
   it "should bind single event attribute" do
-    template_file.write('%a{ :event => { :action => "edit" } } Edit')
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"<a {{action \\\"edit\\\" on=\\\"click\\\"}}>Edit</a>\");\n"
+    to_handlebars('%a{ :event => { :action => "edit" } } Edit').should ==
+       "<a {{action \\\"edit\\\" on=\\\"click\\\"}}>Edit</a>"
   end
 
   it "should bind multiple event attributes" do
-    template_file.write('%a{ :events => [ { :action => "edit" }, { :on => "mouseover", :action => "showEditable" } ] } Edit')
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"<a {{action \\\"edit\\\" on=\\\"click\\\"}} {{action \\\"showEditable\\\" on=\\\"mouseover\\\"}}>Edit</a>\");\n"
+    to_handlebars('%a{ :events => [ { :action => "edit" }, { :on => "mouseover", :action => "showEditable" } ] } Edit').should ==
+      "<a {{action \\\"edit\\\" on=\\\"click\\\"}} {{action \\\"showEditable\\\" on=\\\"mouseover\\\"}}>Edit</a>"
   end
 
   it "should render expressions" do
-    template_file.write('= hb "hello"')
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{hello}}\");\n"
+    to_handlebars('= hb "hello"').should ==
+      "{{hello}}"
   end
 
   it "should render block expressions" do
-    template_file.write("= hb 'hello' do\n  world.")
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{#hello}}world.{{/hello}}\");\n"
+    to_handlebars("= hb 'hello' do\n  world.").should ==
+      "{{#hello}}world.{{/hello}}"
   end
 
   it "should render expression options" do
-    template_file.write('= hb "hello",:whom => "world"')
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{hello whom=\\\"world\\\"}}\");\n"
+    to_handlebars('= hb "hello",:whom => "world"').should ==
+      "{{hello whom=\\\"world\\\"}}"
   end
 
   it "should render tripple-stash expressions" do
-    template_file.write('= hb! "hello"')
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{{hello}}}\");\n"
+    to_handlebars('= hb! "hello"').should ==
+      "{{{hello}}}"
   end
 
   it "should render tripple-stash block expressions" do
-    template_file.write("= hb! 'hello' do\n  world.")
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{{#hello}}}world.{{{/hello}}}\");\n"
+    to_handlebars("= hb! 'hello' do\n  world.").should ==
+      "{{{#hello}}}world.{{{/hello}}}"
   end
 
   it "should render tripple-stash expression options" do
-    template_file.write('= hb! "hello",:whom => "world"')
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{{hello whom=\\\"world\\\"}}}\");\n"
+    to_handlebars('= hb! "hello",:whom => "world"').should ==
+      "{{{hello whom=\\\"world\\\"}}}"
   end
 
   it "should not escape block contents" do
-    template_file.write <<EOF
+    handlebars = to_handlebars <<EOF
 = hb 'if a_thing_is_true' do
   = hb 'hello'
   %a{:bind => {:href => 'aController'}}
 EOF
-    template_file.rewind
-    template = Hamlbars::Template.new(template_file)
-    template.render.should == "Handlebars.templates[\"#{Hamlbars::Template.path_translator(File.basename(template_file.path))}\"] = Handlebars.compile(\"{{#if a_thing_is_true}}{{hello}}\\n<a {{bindAttr href=\\\"aController\\\"}}></a>{{/if}}\");\n"
+    handlebars.should == "{{#if a_thing_is_true}}{{hello}}\\n<a {{bindAttr href=\\\"aController\\\"}}></a>{{/if}}"
   end
 
   it "should not mark expressions as html_safe when XSS protection is disabled" do
@@ -194,7 +184,7 @@ describe Hamlbars::Template, '::template_destination' do
 
   after do
     Hamlbars::Template.enable_closures!
-    Hamlbars::Template.template_destination=@origina_template_destination
+    Hamlbars::Template.template_destination = @original_template_destination
     template_file.flush
   end
 
@@ -259,7 +249,7 @@ describe Hamlbars::Template, '::render_templates_for' do
 
   describe :handlebars do
 
-    subject { Hamlbars::Template } 
+    subject { Hamlbars::Template }
     before { subject.render_templates_for :handlebars }
 
     it "::template_destination should equal 'Handlebars.templates'" do
@@ -278,7 +268,7 @@ describe Hamlbars::Template, '::render_templates_for' do
 
   describe :ember do
 
-    subject { Hamlbars::Template } 
+    subject { Hamlbars::Template }
     before { subject.render_templates_for :ember }
     after { subject.render_templates_for :handlebars }
 
