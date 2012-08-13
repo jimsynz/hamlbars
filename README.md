@@ -12,11 +12,11 @@ you to easily generate [Handlebars](http://handlebarsjs.com) templates using
 Add the following line to your Gemfile (on Rails, inside the `:assets` group):
 
 ```ruby
-gem 'hamlbars', '~> 1.0'
+gem 'hamlbars', '~> 1.1'
 ```
 
 If you are stuck with an older, yanked version like 2012.3.21 and it won't
-update to 1.0, be sure to add `'~> 1.0'` as the version spec and run `bundle
+update to 1.1, be sure to add `'~> 1.1'` as the version spec and run `bundle
 install`.
 
 # Demo Site

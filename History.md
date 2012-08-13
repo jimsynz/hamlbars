@@ -1,5 +1,7 @@
 # master
 
+# 1.1.0
+
 * Add support for `:_action` attributes, and deprecate the `:event` and
   `:events` syntax
 
