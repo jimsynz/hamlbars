@@ -39,10 +39,30 @@ Which will generate the following output:
 <div class="widget" {{bindAttr title="App.widgetController.title"}}></div>
 ```
 
-# Event bindings
+# Action handlers
 
-You can add one or more event actions by adding an event hash or array or event
-hashes to the tag options:
+To use Ember's `{{action}}` helper, set the `:_action` attribute, like so:
+
+```haml
+%a{ :_action => 'toggle' } Toggle
+%a{ :_action => 'edit article on="doubleClick"' } Edit
+```
+
+This will generate:
+
+```html
+<a {{action toggle}}>Toggle</a>
+<a {{action edit article on="doubleClick"}}>Edit</a>
+```
+
+Note that `:_action` has a leading underscore, to distinguish it from regular
+HTML attributes (`<form action="...">`).
+
+# Event bindings (old syntax)
+
+You can also add one or more event actions by adding an event hash or array of
+event hashes to the tag options. This syntax is being deprecated in favor of
+the newer `:_action` syntax described above.
 
 ```haml
 %a{ :event => { :on => 'click', :action => 'clicked' } } Click
