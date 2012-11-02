@@ -179,7 +179,14 @@ The good news is that if you're using the
 automatically detect hamlbars and change it for you. Magic!
 
 If you're using [ember-rails](http://rubygems.org/gems/ember-rails) then you'll
-need to put this in a initializer.
+need to put this in a initializer. When deploying to Heroku, making sure `Hamlbars` is defined [can be helpful][ember-rails-heroku-tip-source]:
+
+```ruby
+if defined? Hamlbars
+  Hamlbars::Template.render_templates_for :ember
+end
+```
+  [ember-rails-heroku-tip-source]: https://github.com/jamesotron/HamlbarsDemo/blob/master/config/initializers/hamlbars.rb
 
 # Configuring JavaScript output:
 
