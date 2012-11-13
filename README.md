@@ -34,7 +34,7 @@ When using the `handlebars_assets` or `ember-rails` gems you need to add an
 extra file extension so that the asset pipeline knows to take the output of
 Hamlbars and send it into the template compiler of your choice.  Luckily
 both gems register the `hbs` extension, so you can enable asset compilation
-by setting `.hbs.hamlbars` as the file extension for your templates.
+by setting `.js.hbs.hamlbars` as the file extension for your templates.
 
 # Demo Site
 
