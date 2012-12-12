@@ -22,5 +22,30 @@ Gem::Specification.new do |s|
   s.files         = %w(README.md History.md MIT-LICENSE) + Dir["lib/**/*"] + Dir["vendor/**/*"]
 
   s.require_paths = ['lib']
+
+  s.post_install_message = <<-EOM
+  DEPRECATION WARNING: Hamlbars 2.0 removes asset compilation!
+
+  Template compilation in Hamlbars was a major source of confusion and bugs
+  since roughly half of its users are using Handlebars.js in their apps and
+  the other half are using Handlebars as part of Ember.js.
+
+  Hamlbars now simply outputs the rendered HTML marked up with Handlebars
+  sections.  It is up to you to choose the Handlebars compiler that works
+  for you.
+
+  If you're using Ember.js I would suggest adding ember-rails to your
+  Gemfile.
+
+  If you're using Handlebars.js then I would suggest adding handlebars_assets
+  to your Gemfile.
+
+  For both of the above gems you may need to rename your templates to
+  `mytemplate.js.hbs.hamlbars` in order for the output of Hamlbars to be sent
+  into the correct compiler.
+
+  Thanks for using Hamlbars. You're awesome.
+  @jamesotron
+  EOM
 end
 

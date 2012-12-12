@@ -36,14 +36,10 @@ module Hamlbars
               handlebars_rendered_attributes << Hamlbars::Ext::Compiler.handlebars_attributes('bindAttr', bind)
             end
 
-            events = attributes.delete('events') || []
-            if event = attributes.delete('event')
-              events << event
-            end
-            events.each do |event|
-              event[:on] = event.delete('on') || event.delete(:on) || 'click'
-              action = event.delete('action') || event.delete(:action)
-              handlebars_rendered_attributes << Hamlbars::Ext::Compiler.handlebars_attributes("action \"#{action}\"", event)
+            if hb = attributes.delete('hb')
+              (hb.respond_to?(:each) ? hb : [hb]).each do |expression|
+                handlebars_rendered_attributes << " {{#{expression}}}"
+              end
             end
 
             # This could be generalized into /_.*/ catch-all syntax, if

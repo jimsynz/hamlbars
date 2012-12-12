@@ -12,80 +12,48 @@ you to easily generate [Handlebars](http://handlebarsjs.com) templates using
 Add the following line to your Gemfile (on Rails, inside the `:assets` group):
 
 ```ruby
-gem 'hamlbars', '~> 1.1'
+gem 'hamlbars', '~> 2.0'
 ```
 
-If you are stuck with an older, yanked version like 2012.3.21 and it won't
-update to 1.1, be sure to add `'~> 1.1'` as the version spec and run `bundle
-install`.
+# DEPRECATION WARNING
+
+As of version 2.0 Hamlbars simply outputs raw Handlebars templates, and you will need to 
+use the precompiler of your choice to compile the assets for your usage.
+
+If you're using [Ember.js](http://emberjs.com) then you will need the 
+[ember-rails](http://rubygems.org/gems/ember-rails) gem. If you're just using
+Handlebars templates on their own then you need to use 
+[handlebars_assets](http://rubygems.org/gems/handlebars_assets) to precompile
+for your framework.
+
+Be sure to take a look at Hamlbars' sister project 
+[FlavourSaver](http://rubygems.org/gems/flavour_saver) for pure-ruby server-side
+rendering of Handlebars templates.
+
+# Chaining compilation using the Rails asset pipeline
+
+When using the `handlebars_assets` or `ember-rails` gems you need to add an 
+extra file extension so that the asset pipeline knows to take the output of
+Hamlbars and send it into the template compiler of your choice.  Luckily
+both gems register the `hbs` extension, so you can enable asset compilation
+by setting `.js.hbs.hamlbars` as the file extension for your templates.
 
 # Demo Site
 
 If you're unsure how all the pieces fit together then take a quick look at the
 [demo site](http://hamlbars-demo.herokuapp.com/).
 
-# Attribute bindings
+# Handlebars extensions to Haml.
 
-You can easily add attribute bindings by adding a `:bind` hash to the tag
-attributes, like so:
+Hamlbars adds a couple of extensions to Haml in order to allow you to create
+handlebars expressions in your templates.
 
-```haml
-%div{ :class => 'widget', :bind => { :title => 'App.widgetController.title' }
-```
-
-Which will generate the following output:
-
-```handlebars
-<div class="widget" {{bindAttr title="App.widgetController.title"}}></div>
-```
-
-# Action handlers
-
-To use Ember's `{{action}}` helper, set the `:_action` attribute, like so:
-
-```haml
-%a{ :_action => 'toggle' } Toggle
-%a{ :_action => 'edit article on="doubleClick"' } Edit
-```
-
-This will generate:
-
-```html
-<a {{action toggle}}>Toggle</a>
-<a {{action edit article on="doubleClick"}}>Edit</a>
-```
-
-Note that `:_action` has a leading underscore, to distinguish it from regular
-HTML attributes (`<form action="...">`).
-
-# Event bindings (old syntax)
-
-You can also add one or more event actions by adding an event hash or array of
-event hashes to the tag options. This syntax is being deprecated in favor of
-the newer `:_action` syntax described above.
-
-```haml
-%a{ :event => { :on => 'click', :action => 'clicked' } } Click
-```
-
-or
-
-```haml
-%div{ :events => [ { :on => 'mouseover', :action => 'highlightView' }, { :on => 'mouseout', :action => 'disableViewHighlight' } ] }
-```
-
-Note that the default event is `click`, so it's not necessary to specify it:
-
-```haml
-%a{ :event => { :action => 'clicked' } } Click
-```
-
-# Handlebars helper
+## Handlebars helper
 
 You can use the `handlebars` helper (or just `hb` for short) to generate both
 Handlebars blocks and expressions.
 
-## Expressions
+### Expressions
 
 Generating Handlebars expressions is as simple as using the `handlebars` helper
 and providing the expression as a string argument:
@@ -100,7 +68,7 @@ which will will generate:
 {{App.widgetController.title}}
 ```
 
-## Blocks
+### Blocks
 
 Whereas passing a block to the `handlebars` helper will create a Handlebars
 block expression:
@@ -124,7 +92,7 @@ will result in the following markup:
 </ul>
 ```
 
-## Options
+### Options
 
 The `hb` helper can take an optional hash of options which will be rendered
 inside the expression:
@@ -139,75 +107,78 @@ will result in:
 {{view App.InfoView tagName="span"}}
 ```
 
-## Tripple-stash
+### Tripple-stash
 
 You can use the `handlebars!` or `hb!` variant of the `handlebars` helper to
 output "tripple-stash" expressions within which Handlebars does not escape the
 output.
 
-# Configuring template output:
+### In-tag expressions
 
-`hamlbars` has three configuration options, which pertain to the generated
-JavaScript:
+Unfortunately, (or fortunately) due to the nature of Haml, we can't put Handlebars
+expressions in a tag definition, eg:
 
-```ruby
-Hamlbars::Template.template_destination    # default 'Handlebars.templates'
-Hamlbars::Template.template_compiler       # default 'Handlebars.compile'
-Hamlbars::Template.template_partial_method # default 'Handlebars.registerPartial'
+```handlebars
+<{{tagName}}>
+  My content
+</{{tagName}}>
 ```
 
-These settings will work find by default if you are using Handlebars as a
-standalone JavaScript library, however if you are using something that embeds
-Handlebars within it then you'll have to change these.
+But we can allow you to put Handlebars expressions in to generate tag arguments by
+adding a special `hb` attribute to your tags. For example:
 
-If you're using [Ember.js](http://www.emberjs.com) then you can use:
-
-```ruby
-Hamlbars::Template.render_templates_for :ember
+```haml
+%div{:hb => 'idHelper'}
 ```
 
-Which is effectively the same as:
+Which would render the following:
 
-```ruby
-Hamlbars::Template.template_destination = 'Ember.TEMPLATES'
-Hamlbars::Template.template_compiler = 'Ember.Handlebars.compile'
-Hamlbars::Template.template_partial_method = 'Ember.Handlebars.registerPartial'
+```handlebars
+<div {{idHelper}}></div>
 ```
 
-The good news is that if you're using the
-[emberjs-rails](http://www.rubygems.org/gems/emberjs-rails) gem then it will
-automatically detect hamlbars and change it for you. Magic!
+If you need to place more than one expression inside your tag then you can pass an array
+of expressions.
 
-If you're using [ember-rails](http://rubygems.org/gems/ember-rails) then you'll
-need to put this in a initializer. When deploying to Heroku, making sure `Hamlbars` is defined [can be helpful][ember-rails-heroku-tip-source]:
+## Ember.js specific extensions
 
-```ruby
-if defined? Hamlbars
-  Hamlbars::Template.render_templates_for :ember
-end
-```
-  [ember-rails-heroku-tip-source]: https://github.com/jamesotron/HamlbarsDemo/blob/master/config/initializers/hamlbars.rb
+A large portion of the audience for Hamlbars is using it to generate templates for sites
+using the Ember.js javascript framework.  We have added some special extra syntax to
+cater for Ember's common idioms.
 
-# Configuring JavaScript output:
+### Attribute bindings
 
-Hamlbars has experimental support for template precompilation using
-[ExecJS](http://rubygems.org/gems/execjs). To enable it, call
+You can easily add attribute bindings by adding a `:bind` hash to the tag
+attributes, like so:
 
-```ruby
-Hamlbars::Template.enable_precompiler!
+```haml
+%div{ :class => 'widget', :bind => { :title => 'App.widgetController.title' }
 ```
 
-You can also disable enclosification (which is enabled by default) using:
+Which will generate the following output:
 
-```ruby
-Hamlbars::Template.disable_closures!
+```handlebars
+<div class="widget" {{bindAttr title="App.widgetController.title"}}></div>
 ```
 
-# Asset pipeline
+### Action handlers
 
-Hamlbars is specifically designed for use with Rails 3.1's asset pipeline.
-Simply create templates ending in `.js.hamlbars` and Sprockets will know what
-to do.
+To use Ember's `{{action}}` helper, set the `:_action` attribute, like so:
+
+```haml
+%a{ :_action => 'toggle' } Toggle
+%a{ :_action => 'edit article on="doubleClick"' } Edit
+```
+
+This will generate:
+
+```html
+<a {{action toggle}}>Toggle</a>
+<a {{action edit article on="doubleClick"}}>Edit</a>
+```
+
+Note that `:_action` has a leading underscore, to distinguish it from regular
+HTML attributes (`<form action="...">`).
 
 # Rails helpers
 
@@ -215,6 +186,8 @@ You can enable support by calling `Hamlbars::Template.enable_rails_helpers!`.
 Probably the best way to do this is to create an initializer.  This is
 dangerous and possibly stupid as a large number of Rails' helpers require
 access to the request object, which is not present when compiling assets.
+
+That said, it can be pretty handy to have access to the route helpers.
 
 **Use at your own risk. You have been warned.**
 
