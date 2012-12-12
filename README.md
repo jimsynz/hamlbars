@@ -12,8 +12,10 @@ you to easily generate [Handlebars](http://handlebarsjs.com) templates using
 Add the following line to your Gemfile (on Rails, inside the `:assets` group):
 
 ```ruby
-gem 'hamlbars', '~> 1.1'
+gem 'hamlbars', '~> 2.0'
 ```
+
+# DEPRECATION WARNING
 
 As of version 2.0 Hamlbars simply outputs raw Handlebars templates, and you will need to 
 use the precompiler of your choice to compile the assets for your usage.
@@ -185,6 +187,8 @@ You can enable support by calling `Hamlbars::Template.enable_rails_helpers!`.
 Probably the best way to do this is to create an initializer.  This is
 dangerous and possibly stupid as a large number of Rails' helpers require
 access to the request object, which is not present when compiling assets.
+
+That said, it can be pretty handy to have access to the route helpers.
 
 **Use at your own risk. You have been warned.**
 
