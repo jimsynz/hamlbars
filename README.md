@@ -7,6 +7,9 @@
 you to easily generate [Handlebars](http://handlebarsjs.com) templates using
 [Haml](http://www.haml-lang.com).
 
+*For an alternative to Hamlbars, also check out
+[Emblem](https://github.com/machty/emblem.js), if you are using Ember.*
+
 # Installation
 
 Add the following line to your Gemfile (on Rails, inside the `:assets` group):
