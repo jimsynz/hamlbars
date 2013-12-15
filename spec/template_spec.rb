@@ -31,7 +31,7 @@ describe Hamlbars::Template do
 
   it "should bind element attributes" do
     to_handlebars('%img{ :bind => { :src => "logoUri" }, :alt => "Logo" }').should ==
-      "<img {{bindAttr src=\"logoUri\"}} alt=\'Logo\' />"
+      "<img {{bind-attr src=\"logoUri\"}} alt=\'Logo\' />"
   end
 
   it "should render action attributes" do
@@ -85,7 +85,7 @@ describe Hamlbars::Template do
   = hb 'hello'
   %a{:bind => {:href => 'aController'}}
 EOF
-    handlebars.should == "{{#if a_thing_is_true}}{{hello}}\n<a {{bindAttr href=\"aController\"}}></a>{{/if}}"
+    handlebars.should == "{{#if a_thing_is_true}}{{hello}}\n<a {{bind-attr href=\"aController\"}}></a>{{/if}}"
   end
 
   it "should not mark expressions as html_safe when XSS protection is disabled" do
