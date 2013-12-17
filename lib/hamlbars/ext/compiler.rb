@@ -33,7 +33,7 @@ module Hamlbars
             handlebars_rendered_attributes = []
 
             if bind = attributes.delete('bind')
-              handlebars_rendered_attributes << Hamlbars::Ext::Compiler.handlebars_attributes('bindAttr', bind)
+              handlebars_rendered_attributes << Hamlbars::Ext::Compiler.handlebars_attributes('bind-attr', bind)
             end
 
             if hb = attributes.delete('hb')
