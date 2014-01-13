@@ -15,27 +15,31 @@ you to easily generate [Handlebars](http://handlebarsjs.com) templates using
 Add the following line to your Gemfile (on Rails, inside the `:assets` group):
 
 ```ruby
-gem 'hamlbars', '~> 2.0'
+gem 'hamlbars', '~> 2.1'
 ```
 
 # DEPRECATION WARNING
 
-As of version 2.0 Hamlbars simply outputs raw Handlebars templates, and you will need to 
+As of version 2.0 Hamlbars simply outputs raw Handlebars templates, and you will need to
 use the precompiler of your choice to compile the assets for your usage.
 
-If you're using [Ember.js](http://emberjs.com) then you will need the 
+If you're using [Ember.js](http://emberjs.com) then you will need the
 [ember-rails](http://rubygems.org/gems/ember-rails) gem. If you're just using
-Handlebars templates on their own then you need to use 
+Handlebars templates on their own then you need to use
 [handlebars_assets](http://rubygems.org/gems/handlebars_assets) to precompile
 for your framework.
 
-Be sure to take a look at Hamlbars' sister project 
+Be sure to take a look at Hamlbars' sister project
 [FlavourSaver](http://rubygems.org/gems/flavour_saver) for pure-ruby server-side
 rendering of Handlebars templates.
 
+As of version 2.1 Hamlbars emits `bind-attr` instead of `bindAttr` for bound
+element attributes. If you are running an older version of Ember, then keep
+your Gemfile pinned to `~> 2.0` until you upgrade.
+
 # Chaining compilation using the Rails asset pipeline
 
-When using the `handlebars_assets` or `ember-rails` gems you need to add an 
+When using the `handlebars_assets` or `ember-rails` gems you need to add an
 extra file extension so that the asset pipeline knows to take the output of
 Hamlbars and send it into the template compiler of your choice.  Luckily
 both gems register the `hbs` extension, so you can enable asset compilation
