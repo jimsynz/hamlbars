@@ -45,7 +45,8 @@ module Hamlbars
             # This could be generalized into /_.*/ catch-all syntax, if
             # necessary. https://github.com/jamesotron/hamlbars/pull/33
             if action = attributes.delete('_action')
-              handlebars_rendered_attributes << " {{action #{action}}}"
+              actionName, rest = action.split(/\s/, 2)
+              handlebars_rendered_attributes << " {{action \"#{actionName}\" #{rest}}}"
             end
 
             handlebars_rendered_attributes
