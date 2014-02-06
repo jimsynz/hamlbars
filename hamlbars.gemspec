@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary       = 'Extensions to Haml to allow creation of handlebars expressions.'
   s.description   = 'Hamlbars allows you to write handlebars templates using the familiar Haml syntax.'
   s.add_dependency 'haml'
-  s.add_dependency 'sprockets'
+  s.add_dependency 'sprockets', '>= 2.0'
   s.add_dependency 'tilt'
   s.add_dependency 'execjs', [">= 1.2"]
   s.add_development_dependency 'rake'

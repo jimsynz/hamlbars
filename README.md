@@ -180,8 +180,8 @@ To use Ember's `{{action}}` helper, set the `:_action` attribute, like so:
 This will generate:
 
 ```html
-<a {{action toggle}}>Toggle</a>
-<a {{action edit article on="doubleClick"}}>Edit</a>
+<a {{action "toggle"}}>Toggle</a>
+<a {{action "edit" article on="doubleClick"}}>Edit</a>
 ```
 
 Note that `:_action` has a leading underscore, to distinguish it from regular

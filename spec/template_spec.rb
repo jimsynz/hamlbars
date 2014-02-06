@@ -36,7 +36,7 @@ describe Hamlbars::Template do
 
   it "should render action attributes" do
     to_handlebars('%a{ :_action => \'edit article on="click"\' } Edit').should ==
-      '<a {{action edit article on="click"}}>Edit</a>'
+      '<a {{action "edit" article on="click"}}>Edit</a>'
   end
 
   it "should render in-tag expressions" do
