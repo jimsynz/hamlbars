@@ -99,6 +99,32 @@ will result in the following markup:
 </ul>
 ```
 
+### If/Else
+
+If/else statements follow the same pattern as blocks, but with the caveat that
+the else statement must be nested within the original if block. If you'd like
+more information, check out the comments in #15.
+
+```haml
+= hb 'if isSignedIn' do
+  Welcome,
+  = hb 'firstName'
+
+  = hb 'else' / Notice this line is indented within the original if statement.
+  Hello! / Notice this line is indented inline with the else statement.
+```
+
+Compiles to:
+
+```handlebars
+{{#if isSignedIn}}
+  Welcome,
+  {{firstName}}
+{{else}}
+  Hello!
+{{/if}}
+```
+
 ### Options
 
 The `hb` helper can take an optional hash of options which will be rendered
