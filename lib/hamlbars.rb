@@ -3,7 +3,7 @@ require 'sprockets'
 
 module Hamlbars
 
-  if defined? Rails
+  if defined? Rails::Engine
     class Engine < Rails::Engine
     end
   end
