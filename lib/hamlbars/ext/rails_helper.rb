@@ -10,7 +10,7 @@ module Hamlbars
         scope = scope.dup
 
         scope.class.send(:include, ActionView::Helpers) if defined?(::ActionView)
-        if defined?(::Rails)
+        if defined?(::Rails.application)
           scope.class.send(:include, Rails.application.helpers)
           scope.class.send(:include, Rails.application.routes.url_helpers)
           scope.default_url_options = Rails.application.config.action_controller.default_url_options || {}
