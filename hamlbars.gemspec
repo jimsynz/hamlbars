@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'tilt'
   s.add_dependency 'execjs', [">= 1.2"]
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec', ["~> 2.10"]
+  s.add_development_dependency 'rspec', ["~> 3.0"]
   s.add_development_dependency 'activesupport'
 
   s.files         = %w(README.md History.md MIT-LICENSE) + Dir["lib/**/*"] + Dir["vendor/**/*"]
