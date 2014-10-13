@@ -12,9 +12,6 @@ describe Hamlbars::Template do
 
   after :each do
     template_file.flush
-  end
-
-  after :all do
     template_file.unlink
   end
 
@@ -26,57 +23,67 @@ describe Hamlbars::Template do
   end
 
   it "should render compiler preamble" do
-    to_handlebars('').should == ''
+    expect(to_handlebars('')).to eq('')
   end
 
   it "should bind element attributes" do
-    to_handlebars('%img{ :bind => { :src => "logoUri" }, :alt => "Logo" }').should ==
+    expect(to_handlebars('%img{ :bind => { :src => "logoUri" }, :alt => "Logo" }')).to eq(
       "<img {{bind-attr src=\"logoUri\"}} alt=\'Logo\' />"
+    )
   end
 
   it "should render action attributes" do
-    to_handlebars('%a{ :_action => \'edit article on="click"\' } Edit').should ==
+    expect(to_handlebars('%a{ :_action => \'edit article on="click"\' } Edit')).to eq(
       '<a {{action "edit" article on="click"}}>Edit</a>'
+    )
   end
 
   it "should render in-tag expressions" do
-    to_handlebars('%div{:hb => \'testExpression\'}').should ==
+    expect(to_handlebars('%div{:hb => \'testExpression\'}')).to eq(
       '<div {{testExpression}}></div>'
+    )
   end
 
   it 'should render multiple in-tag expressions' do
-    to_handlebars('%div{:hb => [\'firstTestExpression\', \'secondTestExpression withArgument\']}').should ==
+    expect(to_handlebars('%div{:hb => [\'firstTestExpression\', \'secondTestExpression withArgument\']}')).to eq(
       '<div {{firstTestExpression}} {{secondTestExpression withArgument}}></div>'
+    )
   end
 
   it "should render expressions" do
-    to_handlebars('= hb "hello"').should ==
+    expect(to_handlebars('= hb "hello"')).to eq(
       "{{hello}}"
+    )
   end
 
   it "should render block expressions" do
-    to_handlebars("= hb 'hello' do\n  world.").should ==
+    expect(to_handlebars("= hb 'hello' do\n  world.")).to eq(
       "{{#hello}}world.{{/hello}}"
+    )
   end
 
   it "should render expression options" do
-    to_handlebars('= hb "hello",:whom => "world"').should ==
+    expect(to_handlebars('= hb "hello",:whom => "world"')).to eq(
       "{{hello whom=\"world\"}}"
+    )
   end
 
   it "should render tripple-stash expressions" do
-    to_handlebars('= hb! "hello"').should ==
+    expect(to_handlebars('= hb! "hello"')).to eq(
       "{{{hello}}}"
+    )
   end
 
   it "should render tripple-stash block expressions" do
-    to_handlebars("= hb! 'hello' do\n  world.").should ==
+    expect(to_handlebars("= hb! 'hello' do\n  world.")).to eq(
       "{{{#hello}}}world.{{{/hello}}}"
+    )
   end
 
   it "should render tripple-stash expression options" do
-    to_handlebars('= hb! "hello",:whom => "world"').should ==
+    expect(to_handlebars('= hb! "hello",:whom => "world"')).to eq(
       "{{{hello whom=\"world\"}}}"
+    )
   end
 
   it "should not escape block contents" do
@@ -85,7 +92,7 @@ describe Hamlbars::Template do
   = hb 'hello'
   %a{:bind => {:href => 'aController'}}
 EOF
-    handlebars.should == "{{#if a_thing_is_true}}{{hello}}\n<a {{bind-attr href=\"aController\"}}></a>{{/if}}"
+    expect(handlebars).to eq("{{#if a_thing_is_true}}{{hello}}\n<a {{bind-attr href=\"aController\"}}></a>{{/if}}")
   end
 
   it "should not mark expressions as html_safe when XSS protection is disabled" do
@@ -96,7 +103,7 @@ EOF
     end
     Hamlbars::Template
     helpers = Class.new { include Haml::Helpers }.new
-    helpers.hb 'some_expression'.should_not be_a(ActiveSupport::SafeBuffer)
+    helpers.hb expect('some_expression').not_to be_a(ActiveSupport::SafeBuffer)
   end
 
   it "should not mark expressions as html_safe when XSS protection is disabled" do
@@ -107,7 +114,7 @@ EOF
     end
     Hamlbars::Template
     helpers = Class.new { include Haml::Helpers }.new
-    helpers.hb 'some_expression'.should_not be_a(ActiveSupport::SafeBuffer)
+    helpers.hb expect('some_expression').not_to be_a(ActiveSupport::SafeBuffer)
   end
 
 end
