@@ -14,7 +14,6 @@ end
 require File.expand_path(__FILE__, '../lib/hamlbars.rb')
 
 RSpec.configure do |config|
-  config.debug = false
   config.color = true
   config.formatter = 'd'
 end
