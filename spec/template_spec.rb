@@ -12,9 +12,6 @@ describe Hamlbars::Template do
 
   after :each do
     template_file.flush
-  end
-
-  after :all do
     template_file.unlink
   end
 
