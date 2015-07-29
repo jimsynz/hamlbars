@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'sprockets'
+require 'tilt'
+require 'hamlbars'
+
+Tilt.register Hamlbars::Template, 'hamlbars'
+
+input  = ARGV.first
+
+template = Tilt['hamlbars'].new(input) {
+  File.read(input)
+}
+
+output = template.render(self)
+
+$stdout.write(output)
