@@ -58,8 +58,27 @@ describe Hamlbars::Template do
 
   it "should render block expressions" do
     expect(to_handlebars("= hb 'hello' do\n  world.")).to eq(
-      "{{#hello}}world.{{/hello}}"
+      "{{#hello}}\n  world.\n{{/hello}}"
     )
+  end
+
+  it "should keep newlines on block expressions" do
+    handlebars = to_handlebars <<EOF
+= hb 'if something' do
+  %div
+    One
+    %div two
+EOF
+    expected = <<EOF
+{{#if something}}
+  <div>
+    One
+    <div>two</div>
+  </div>
+{{/if}}
+EOF
+
+    expect(handlebars).to eq(expected.strip)
   end
 
   it "should render expression options" do
@@ -76,7 +95,7 @@ describe Hamlbars::Template do
 
   it "should render tripple-stash block expressions" do
     expect(to_handlebars("= hb! 'hello' do\n  world.")).to eq(
-      "{{{#hello}}}world.{{{/hello}}}"
+      "{{{#hello}}}\n  world.\n{{{/hello}}}"
     )
   end
 
@@ -92,7 +111,7 @@ describe Hamlbars::Template do
   = hb 'hello'
   %a{:bind => {:href => 'aController'}}
 EOF
-    expect(handlebars).to eq("{{#if a_thing_is_true}}{{hello}}\n<a {{bind-attr href=\"aController\"}}></a>{{/if}}")
+    expect(handlebars).to eq("{{#if a_thing_is_true}}\n  {{hello}}\n<a {{bind-attr href=\"aController\"}}></a>\n{{/if}}")
   end
 
   it "should not mark expressions as html_safe when XSS protection is disabled" do
