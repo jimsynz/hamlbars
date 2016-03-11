@@ -102,7 +102,7 @@ module Haml
       def express(demarcation,expression,options={},&block)
         if block.respond_to? :call
           content = capture_haml(&block)
-          output = "#{demarcation.first}##{make(expression, options)}#{demarcation.last}#{content.strip}#{demarcation.first}/#{expression.split(' ').first}#{demarcation.last}"
+          output = "#{demarcation.first}##{make(expression, options)}#{demarcation.last}\n#{content.strip.gsub(/^/, '  ')}\n#{demarcation.first}/#{expression.split(' ').first}#{demarcation.last}"
         else
           output = "#{demarcation.first}#{make(expression, options)}#{demarcation.last}"
         end
