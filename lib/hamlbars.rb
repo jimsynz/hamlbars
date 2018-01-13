@@ -16,7 +16,7 @@ module Hamlbars
   Haml::Compiler.send(:include, Ext::Compiler)
 
   if defined? Sprockets
-    Sprockets.register_engine '.hamlbars', Template
+    Sprockets.register_engine '.hamlbars', Template, silence_deprecation: true
   end
 
 end
